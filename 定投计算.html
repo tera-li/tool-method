@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      let i = 0;
+      let money = 60000;
+      let periods = 15;
+
+      let rate = 0.039;
+      let rate1 = 0.04;
+      let rate2 = 0.05;
+      function getYear(dataMoney, interest) {
+        const countMoney = dataMoney + money;
+        const oneMoney = countMoney * interest;
+        const allMoney = countMoney + oneMoney;
+        i++;
+        if (i === periods) {
+          i = 0;
+          console.log(
+            `每年定投${money}，定投${periods}年，利率${
+              interest * 100
+            }%，最后可得${allMoney.toFixed(2)}`
+          );
+          return;
+        }
+        getYear(allMoney, interest);
+      }
+      getYear(0, rate);
+      getYear(0, rate1);
+      getYear(0, rate2);
+    </script>
+  </body>
+</html>

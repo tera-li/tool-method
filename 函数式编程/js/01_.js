@@ -1,16 +1,21 @@
 // 函数柯里化
-// 给一个函数传入一部分参数,此时就会返回一个函数来接收剩余的参数。
+// 给一个函数传入一部分参数，接着返回另一个函数来接收剩余的参数，当符合要求时执行计算函数。
+// 闭包的体现，访问之前传入的参数
 
-function unCurried(x, y) {
-  return x + y;
-}
+const unCurried = (a, b, c) => {
+  return (a * b) / c;
+};
 
-function curried(x) {
-  return function (y) {
-    return x + y;
-  };
-}
+const sum = (a, b, c, d) => (a * b) / c / d;
 
-const curried = (x) => (y) => x + y;
+const curry = (func, length) => {
+  const curried = (...args) =>
+    args.length !== func.length
+      ? (...params) => curried(...args, ...params)
+      : func(...args);
+  return curried;
+};
 
-curried(1)(2);
+const currySum = curry(sum);
+
+console.log(currySum(10)(3)(2, 3));

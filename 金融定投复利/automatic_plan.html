@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.45/vue.global.prod.min.js"
+      integrity="sha512-3CesFAr6COyDB22AiVG2erk2moD1FeL3VMx6UezptTW3qmYdcQhfv6yDGmH4ICNTxd0Rs2AbMQ0Q5lG7J/8n3Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <style>
+      input {
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <form @submit="(e) => e.preventDefault()">
+        <fieldset>
+          <legend>定投复利计算：</legend>
+          <label for="money">每年定投金额：</label>
+          <input
+            id="money"
+            type="number"
+            name="money"
+            v-model="money"
+            @change="handleAutomatic"
+          />
+          元
+          <br />
+          <label for="year">年份：</label>
+          <input
+            id="year"
+            type="number"
+            name="year"
+            v-model="year"
+            @change="handleAutomatic"
+          />
+          年
+          <br />
+          <label for="rate">利率：</label>
+          <input
+            id="rate"
+            type="number"
+            name="rate"
+            v-model="rate"
+            @change="handleAutomatic"
+          />
+          %
+          <br />
+          <button @click="handleAutomatic">提交</button>
+          <p>{{ message }}</p>
+        </fieldset>
+      </form>
+    </div>
+
+    <script>
+      const { createApp, onMounted, ref, reactive, toRefs } = Vue;
+      const composition = {
+        setup() {
+          const data = reactive({
+            // 每年投入金额
+            money: 10000,
+            // 总共投多少年
+            year: 10,
+            // 每年利息
+            rate: 4,
+            // 输出
+            message: "",
+          });
+          // 初始化计数
+          let i = reactive(0);
+
+          // 计算总息
+          const getCountMoney = (dataMoney, interest) => {
+            const countMoney = dataMoney + data.money;
+            const oneMoney = countMoney * interest * 0.01;
+            const allMoney = countMoney + oneMoney;
+            i++;
+            if (i === data.year) {
+              i = 0;
+              data.message = `每年定投${data.money}，定投${data.year}年，利率${
+                data.rate
+              }%，最后可得${allMoney.toFixed(2)}`;
+
+              return;
+            }
+            getCountMoney(allMoney, interest);
+          };
+          // 触发事件
+          const handleAutomatic = (val) => {
+            getCountMoney(0, data.rate);
+          };
+          return { handleAutomatic, getCountMoney, ...toRefs(data) };
+        },
+      };
+      const app = createApp(composition).mount("#app");
+    </script>
+  </body>
+</html>
